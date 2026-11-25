@@ -1,0 +1,36 @@
+# dy-sync 配置文件
+download_dir: "./downloads"
+data_dir: "./data"
+
+# 下载控制
+concurrency: 2                 # 同时下载的视频数（防风控建议 1~2）
+rate_limit: 1.5                # 每秒最大请求数上限
+retry_times: 3                 # 单文件下载失败重试次数
+timeout_seconds: 120           # 单文件下载超时（秒）
+redownload_missing: true       # 数据库标记已下载但本地文件被删时，是否重新下载
+
+# 防风控与节奏控制（随机抖动 + 批次冷却 + 自动熔断）
+anti_risk:
+  download_delay_min: 1.5      # 每个视频下载前的最小随机间隔（秒）
+  download_delay_max: 3.5      # 每个视频下载前的最大随机间隔（秒）
+  scroll_delay_min: 2.0        # 主页翻页滚动的最小随机间隔（秒）
+  scroll_delay_max: 4.5        # 主页翻页滚动的最大随机间隔（秒）
+  batch_cooldown_every: 15     # 每下载多少个作品触发一次批次冷却（0 为关闭）
+  batch_cooldown_min: 15.0     # 批次冷却最小休眠时长（秒）
+  batch_cooldown_max: 30.0     # 批次冷却最大休眠时长（秒）
+  creator_delay_min: 5.0       # 同步多个博主时，切换博主的最小间隔（秒）
+  creator_delay_max: 12.0      # 同步多个博主时，切换博主的最大间隔（秒）
+  circuit_breaker_failures: 5  # 连续失败（含 403/429 风控）达到此次数后自动熔断停止
+  rate_limit_backoff_base: 10.0  # 遇到 403/429 时的基础退避冷却秒数
+
+# 增量同步控制
+incremental_stop_threshold: 5  # 连续遇到多少条已下载的【非置顶】作品后停止翻页
+max_scroll_pages: 50           # 单次同步最大翻页次数（0 表示不限制）
+
+# 浏览器配置
+headless: false                # 同步时是否隐藏浏览器窗口（建议先 false 观察，稳定后可改 true）
+browser_channel: ""            # 可填 "msedge" 或 "chrome" 复用本机浏览器，留空使用 Playwright 内置 Chromium
+
+# 文件命名模板（可用变量: {date}, {title}, {id}）
+filename_template: "{date}_{title}_{id}"
+max_title_length: 50

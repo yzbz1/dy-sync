@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+
+# Runtime data & downloads
+data/
+downloads/
+*.part
+*.log
+
+# Environment & OS files
+.env
+.env.local
+.DS_Store
+Thumbs.db
